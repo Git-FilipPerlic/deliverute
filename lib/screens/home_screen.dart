@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../data/progress.dart';
 import '../game/level.dart';
-import 'game_screen.dart';
+import 'level_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -20,19 +20,25 @@ class HomeScreen extends StatelessWidget {
               Card(
                 child: ListTile(
                   enabled: level.number <= progress.unlocked,
-                  leading: CircleAvatar(child: Text('${level.number}')),
-                  title: Text('Nivo ${level.number}'),
+                  leading: CircleAvatar(
+                    child: level.kind == LevelKind.compass
+                        ? const Icon(Icons.explore)
+                        : Text('${level.shownNo}'),
+                  ),
+                  title: Text(level.title),
                   subtitle: Text(
-                    '${level.timeLimit.inSeconds} s po rundi'
+                    '${level.about}\n'
+                    '${level.timeLimit.inMilliseconds / 1000} s po rundi'
                     '${level.labels ? '' : ' · mapa bez imena'}'
                     ' · najbolje: ${progress.bestFor(level.number)}',
                   ),
+                  isThreeLine: true,
                   trailing: level.number <= progress.unlocked
                       ? const Icon(Icons.play_arrow)
                       : const Icon(Icons.lock),
                   onTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => GameScreen(level: level)),
+                    MaterialPageRoute(builder: (_) => levelScreen(level)),
                   ),
                 ),
               ),

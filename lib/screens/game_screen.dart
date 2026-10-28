@@ -8,6 +8,8 @@ import '../data/progress.dart';
 import '../game/game_session.dart';
 import '../game/level.dart';
 import '../services/score_service.dart';
+import '../widgets/address_block.dart';
+import '../widgets/result_view.dart';
 
 class GameScreen extends StatefulWidget {
   final Level level;
@@ -108,16 +110,20 @@ class _GameScreenState extends State<GameScreen> {
         ),
       );
     }
-    if (session.finished) return _result(context);
+    if (session.finished) {
+      return ResultView(
+        level: widget.level,
+        correct: session.correct,
+        points: session.points,
+        avgTime: session.avgTime,
+        passed: session.passed,
+      );
+    }
     final r = round!;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 72,
-        title: Text(
-          r.target.label,
-          maxLines: 2,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-        ),
+        title: AddressBlock(r.target),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
@@ -146,8 +152,8 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: FlutterMap(
         options: MapOptions(
-          initialCenter: const LatLng(45.2540, 19.8400),
-          initialZoom: 13.5,
+          initialCenter: Level.center,
+          initialZoom: widget.level.zoom,
           interactionOptions:
               const InteractionOptions(flags: InteractiveFlag.none),
           onTap: (_, p) => _onMapTap(p),
@@ -172,55 +178,6 @@ class _GameScreenState extends State<GameScreen> {
             ],
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _result(BuildContext context) {
-    final next = widget.level.number < Level.all.length
-        ? Level.all[widget.level.number]
-        : null;
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Tačno: ${session.correct}/${GameSession.totalRounds}\n'
-              'Poeni: ${session.points}\n'
-              'Prosek: ${session.avgTime.inMilliseconds} ms',
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 28),
-            ),
-            const SizedBox(height: 12),
-            Text(session.passed
-                ? (next != null
-                    ? 'Prošao si! Otključan nivo ${next.number}.'
-                    : 'Prošao si!')
-                : 'Treba ti ${Level.passMark} tačnih za sledeći nivo.'),
-            const SizedBox(height: 24),
-            if (session.passed && next != null)
-              FilledButton(
-                onPressed: () => Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => GameScreen(level: next)),
-                ),
-                child: Text('Nivo ${next.number}'),
-              ),
-            TextButton(
-              onPressed: () => Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => GameScreen(level: widget.level)),
-              ),
-              child: const Text('Opet'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Nazad'),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -44,6 +44,7 @@ class GameSession {
   GameSession(this.level);
 
   final _rng = Random();
+  final _used = <Address>{};
 
   int roundNo = 0;
   int correct = 0;
@@ -59,8 +60,13 @@ class GameSession {
   Round nextRound() {
     final halfLat = _baseHalfLat * level.sizeScale;
     final halfLng = _baseHalfLng * level.sizeScale;
-    final pool = [...addresses]..shuffle(_rng);
-    final target = pool.removeAt(0);
+    final inView = addresses.where((a) => level.inView(a.pos)).toList();
+    final pool = (inView.length >= totalRounds ? inView : [...addresses])
+      ..shuffle(_rng);
+    // ista adresa (ulica + broj) se ne traži dvaput u jednoj igri
+    final target = pool.firstWhere((a) => !_used.contains(a));
+    _used.add(target);
+    pool.remove(target);
     if (level.nearby) {
       double d(Address a) =>
           pow(a.pos.latitude - target.pos.latitude, 2).toDouble() +
