@@ -9,7 +9,9 @@ import '../data/addresses.dart';
 import '../data/progress.dart';
 import '../game/level.dart';
 import '../services/score_service.dart';
-import '../widgets/address_block.dart';
+import '../theme.dart';
+import '../widgets/countdown_view.dart';
+import '../widgets/game_header.dart';
 import '../widgets/result_view.dart';
 
 enum Dir { north, east, south, west }
@@ -132,7 +134,8 @@ class _CompassScreenState extends State<CompassScreen>
     if (ok) {
       correct++;
       streak++;
-      final left = 1 - took.inMilliseconds / widget.level.timeLimit.inMilliseconds;
+      final left =
+          1 - took.inMilliseconds / widget.level.timeLimit.inMilliseconds;
       points += 100 + (100 * left.clamp(0.0, 1.0)).round() + min(streak, 5) * 10;
     } else {
       streak = 0;
@@ -160,15 +163,14 @@ class _CompassScreenState extends State<CompassScreen>
     });
   }
 
-  Color _color(Dir d, ColorScheme cs) {
-    if (!answered) return cs.primaryContainer;
-    if (d == answer) return Colors.green;
-    if (d == picked) return Colors.red;
-    return cs.surfaceContainerHighest;
+  Color _color(Dir d) {
+    if (!answered) return C.card2;
+    if (d == answer) return C.green;
+    if (d == picked) return C.red;
+    return C.card;
   }
 
   Widget _button(Dir d, IconData icon, String letter) {
-    final cs = Theme.of(context).colorScheme;
     final highlight = answered && (d == answer || d == picked);
     return Padding(
       padding: const EdgeInsets.all(6),
@@ -181,7 +183,7 @@ class _CompassScreenState extends State<CompassScreen>
           width: 76,
           height: 76,
           decoration: BoxDecoration(
-            color: _color(d, cs),
+            color: _color(d),
             borderRadius: BorderRadius.circular(22),
           ),
           child: Material(
@@ -195,7 +197,7 @@ class _CompassScreenState extends State<CompassScreen>
                   Icon(icon, size: 34),
                   Text(letter,
                       style: const TextStyle(
-                          fontFamily: 'ArchivoBlack', fontSize: 12)),
+                          fontFamily: displayFont, fontSize: 12)),
                 ],
               ),
             ),
@@ -216,13 +218,7 @@ class _CompassScreenState extends State<CompassScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (countdown != null) {
-      return Scaffold(
-        body: Center(
-          child: Text('$countdown', style: const TextStyle(fontSize: 96)),
-        ),
-      );
-    }
+    if (countdown != null) return CountdownView(countdown!);
     if (finished) {
       return ResultView(
         level: widget.level,
@@ -233,36 +229,18 @@ class _CompassScreenState extends State<CompassScreen>
       );
     }
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 72,
-        title: AddressBlock(target),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text('${idx + (answered ? 0 : 1)}/$rounds'),
-                Text('$points'),
-              ],
-            ),
-          ),
-        ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(4),
-          child: answered
-              ? const SizedBox(height: 4)
-              : TweenAnimationBuilder<double>(
-                  key: ValueKey(idx),
-                  tween: Tween(begin: 1, end: 0),
-                  duration: widget.level.timeLimit,
-                  builder: (_, v, _) => LinearProgressIndicator(value: v),
-                ),
-        ),
-      ),
       body: Column(
         children: [
+          GameHeader(
+            address: target,
+            round: '${idx + (answered ? 0 : 1)}/$rounds',
+            points: points,
+            bar: GameHeader.timeBar(
+              key: idx,
+              duration: widget.level.timeLimit,
+              running: !answered,
+            ),
+          ),
           Expanded(
             child: Stack(
               children: [
@@ -287,7 +265,7 @@ class _CompassScreenState extends State<CompassScreen>
                         height: 64,
                         child: Column(
                           children: [
-                            const Icon(Icons.place, color: Colors.red, size: 36),
+                            const Icon(Icons.place, color: C.red, size: 36),
                             _chip('CENTAR'),
                           ],
                         ),
@@ -301,25 +279,29 @@ class _CompassScreenState extends State<CompassScreen>
               ],
             ),
           ),
-          Padding(
+          Container(
+            color: C.bg,
             padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _button(Dir.north, Icons.arrow_upward, 'S'),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _button(Dir.west, Icons.arrow_back, 'Z'),
-                    const SizedBox(
-                      width: 76,
-                      child: Icon(Icons.explore, size: 40, color: Colors.grey),
-                    ),
-                    _button(Dir.east, Icons.arrow_forward, 'I'),
-                  ],
-                ),
-                _button(Dir.south, Icons.arrow_downward, 'J'),
-              ],
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _button(Dir.north, Icons.arrow_upward, 'S'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _button(Dir.west, Icons.arrow_back, 'Z'),
+                      const SizedBox(
+                        width: 76,
+                        child: Icon(Icons.explore, size: 40, color: C.muted),
+                      ),
+                      _button(Dir.east, Icons.arrow_forward, 'I'),
+                    ],
+                  ),
+                  _button(Dir.south, Icons.arrow_downward, 'J'),
+                ],
+              ),
             ),
           ),
         ],

@@ -59,5 +59,7 @@ class Level {
         zoom: 15, labels: false, nearby: true),
     Level(11, 'Julijana', 0.2, Duration(seconds: 2),
         zoom: 15, labels: false, nearby: true),
+    Level(12, 'Monika', 0.17, Duration(milliseconds: 1800),
+        zoom: 15, labels: false, nearby: true),
   ];
 }

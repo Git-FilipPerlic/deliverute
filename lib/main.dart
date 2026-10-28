@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'data/progress.dart';
 import 'screens/home_screen.dart';
+import 'theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,10 +17,8 @@ class RuteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Rute',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-        useMaterial3: true,
-      ),
+      debugShowCheckedModeBanner: false,
+      theme: appTheme(),
       home: const HomeScreen(),
     );
   }
