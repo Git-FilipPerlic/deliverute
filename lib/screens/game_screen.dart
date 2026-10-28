@@ -177,10 +177,12 @@ class _GameScreenState extends State<GameScreen>
                 TileLayer(
                   urlTemplate: widget.level.labels
                       ? 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
-                      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}.png',
+                      // Esri svetla podloga: bez imena ulica, bez API ključa
+                      // (Carto sada traži ključ i vraća natpis "API KEY REQUIRED")
+                      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+                  maxNativeZoom: widget.level.labels ? 19 : 16,
                   // ako izvor bez imena ulica ne radi, bar prikaži običnu mapu
                   fallbackUrl: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  subdomains: const ['a', 'b', 'c', 'd'],
                   userAgentPackageName: 'com.rute.rute',
                   errorTileCallback: (tile, error, stack) =>
                       debugPrint('Tile greška: $error'),
