@@ -27,12 +27,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                   title: Text(level.title),
                   subtitle: Text(
-                    '${level.about}\n'
                     '${level.timeLimit.inMilliseconds / 1000} s po rundi'
                     '${level.labels ? '' : ' · mapa bez imena'}'
                     ' · najbolje: ${progress.bestFor(level.number)}',
                   ),
-                  isThreeLine: true,
                   trailing: level.number <= progress.unlocked
                       ? const Icon(Icons.play_arrow)
                       : const Icon(Icons.lock),

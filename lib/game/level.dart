@@ -15,7 +15,6 @@ class Level {
   final Duration timeLimit; // po rundi; istek vremena = netačno
   final bool labels; // imena ulica na mapi
   final bool nearby; // kvadrati se biraju blizu tačnog
-  final String about; // žena po kojoj je nivo nazvan
   const Level(
     this.number,
     this.title,
@@ -25,7 +24,6 @@ class Level {
     this.labels = true,
     this.nearby = false,
     this.kind = LevelKind.address,
-    this.about = '',
   });
 
   /// Tačnih odgovora (od 10) potrebno za otključavanje sledećeg nivoa.
@@ -45,40 +43,21 @@ class Level {
   }
 
   static const all = <Level>[
-    Level(1, 'Isidora', 1.0, Duration(seconds: 10),
-        about: 'Isidora Sekulić · književnica, gimnazija u NS'),
-    Level(2, 'Mileva', 0.8, Duration(seconds: 7),
-        about: 'Mileva Marić · naučnica'),
-    Level(3, 'Milica', 0.8, Duration(seconds: 5),
-        nearby: true, about: 'Milica Stojadinović Srpkinja · pesnikinja'),
-    Level(4, 'Savka', 0.6, Duration(seconds: 4),
-        labels: false, nearby: true, about: 'Savka Subotić · humanitarka'),
-    Level(5, 'Marija', 0.5, Duration(seconds: 3),
-        labels: false, nearby: true, about: 'Marija Trandafil · dobrotvorka'),
-    Level(6, 'Draga', 1.0, Duration(seconds: 4),
-        kind: LevelKind.compass,
-        about: 'Bonus · strane sveta · Draga Dejanović, mislilja'),
+    Level(1, 'Isidora', 1.0, Duration(seconds: 10)),
+    Level(2, 'Mileva', 0.8, Duration(seconds: 7)),
+    Level(3, 'Milica', 0.8, Duration(seconds: 5), nearby: true),
+    Level(4, 'Savka', 0.6, Duration(seconds: 4), labels: false, nearby: true),
+    Level(5, 'Marija', 0.5, Duration(seconds: 3), labels: false, nearby: true),
+    Level(6, 'Draga', 1.0, Duration(seconds: 4), kind: LevelKind.compass),
     Level(7, 'Mara', 0.45, Duration(seconds: 3),
-        zoom: 14,
-        labels: false,
-        nearby: true,
-        about: 'Mara Bogdanović Rosandić · slikarka, fotografkinja'),
+        zoom: 14, labels: false, nearby: true),
     Level(8, 'Mira', 0.35, Duration(seconds: 3),
-        zoom: 14.5,
-        labels: false,
-        nearby: true,
-        about: 'Mira Banjac · glumica'),
+        zoom: 14.5, labels: false, nearby: true),
     Level(9, 'Xenia', 0.3, Duration(milliseconds: 2500),
-        zoom: 14.5, labels: false, nearby: true, about: 'Nivo 8'),
+        zoom: 14.5, labels: false, nearby: true),
     Level(10, 'Nataša', 0.25, Duration(milliseconds: 2500),
-        zoom: 15,
-        labels: false,
-        nearby: true,
-        about: 'Nataša Bekvalac · pevačica'),
+        zoom: 15, labels: false, nearby: true),
     Level(11, 'Julijana', 0.2, Duration(seconds: 2),
-        zoom: 15,
-        labels: false,
-        nearby: true,
-        about: 'Julijana Ilijić · borkinja za ženska prava'),
+        zoom: 15, labels: false, nearby: true),
   ];
 }
