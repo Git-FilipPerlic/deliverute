@@ -19,6 +19,16 @@ class RuteApp extends StatelessWidget {
       title: 'Rute',
       debugShowCheckedModeBanner: false,
       theme: appTheme(),
+      // na širokom ekranu (web) igra ostaje u "telefonskom" stubu
+      builder: (context, child) => ColoredBox(
+        color: C.bg,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: child,
+          ),
+        ),
+      ),
       home: const HomeScreen(),
     );
   }
